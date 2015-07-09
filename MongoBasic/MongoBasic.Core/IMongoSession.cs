@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Driver;
 
 namespace MongoBasic.Core
 {
@@ -14,5 +15,6 @@ namespace MongoBasic.Core
         void DeleteAll<TEntity>();
         void DeleteAllCollections();
         int Count<TEntity>();
+        DatabaseStatsResult Status();
     }
 }

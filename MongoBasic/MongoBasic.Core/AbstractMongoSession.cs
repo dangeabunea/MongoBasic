@@ -72,6 +72,11 @@ namespace MongoBasic.Core
             throw new NotImplementedException();
         }
 
+        public DatabaseStatsResult Status()
+        {
+            return Database.GetStats();
+        }
+
         protected abstract void DefineClassMaps();
 
         protected abstract void DefineCollections();

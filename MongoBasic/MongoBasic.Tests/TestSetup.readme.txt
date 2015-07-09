@@ -1,0 +1,20 @@
+﻿##TEST SETUP##
+
+Because this library deals with MongoDb connections, we actually need to be able to connect
+to a Mongo Server. So, in order to run the tests, make sure you have the following Mongo
+databases configured, and that you can connect to them.
+
+* Test Mongo Server without auth
+
+Address	: localhost
+Port		: 27016
+Database	: mongobasic
+
+* Test Mongo Server with auth
+
+Address	: localhost
+Port		: 27016
+Database	: mongobasicauth
+User		: mongobasic
+Password	: monogbasic
+Auth		: CRC

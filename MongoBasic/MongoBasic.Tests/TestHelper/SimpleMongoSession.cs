@@ -1,7 +1,7 @@
 ﻿using MongoBasic.Core;
 using MongoDB.Driver;
 
-namespace MongoBasic.Tests
+namespace MongoBasic.Tests.TestHelper
 {
     /// <summary>
     /// Simple test mongo session used to check connectivity against the database.

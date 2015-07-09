@@ -1,4 +1,4 @@
-﻿namespace MongoBasic.Tests
+﻿namespace MongoBasic.Tests.TestHelper
 {
     public static class TestConstants
     {

@@ -2,7 +2,7 @@
 
 namespace MongoBasic.Core
 {
-    public abstract class MongoClassMap<T>
+    public abstract class MongoClassMap<T> : IMongoClassMap
     {
         protected MongoClassMap()
         {

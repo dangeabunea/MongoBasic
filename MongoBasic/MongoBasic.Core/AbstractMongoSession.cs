@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace MongoBasic.Core
 {
@@ -12,14 +13,14 @@ namespace MongoBasic.Core
     public abstract class AbstractMongoSession : IMongoSession
     {
         protected readonly MongoDatabase Database;
-        protected readonly IDictionary<Type, string> RegisteredCollections;
-        protected readonly IList<IMongoClassMap> RegisteredClassMaps;
+        private readonly IDictionary<Type, string> _registeredCollections;
+        private readonly IList<IMongoClassMap> _registeredClassMaps;
 
         protected AbstractMongoSession(MongoDatabase mongoDatabase)
         {
             Database = mongoDatabase;
-            RegisteredClassMaps = new List<IMongoClassMap>();
-            RegisteredCollections = new Dictionary<Type, string>();
+            _registeredClassMaps = new List<IMongoClassMap>();
+            _registeredCollections = new Dictionary<Type, string>();
             
             //will use concrete type implementations
             DefineCollections();
@@ -29,7 +30,8 @@ namespace MongoBasic.Core
 
         public IQueryable<TEntity> Query<TEntity>()
         {
-            throw new NotImplementedException();
+            var collection = GetCollection<TEntity>();
+            return collection.AsQueryable();
         }
 
         public IQueryable<TEntity> Query<TEntity>(string[] fields)
@@ -44,12 +46,14 @@ namespace MongoBasic.Core
 
         public void Save<TEntity>(TEntity entity)
         {
-            throw new NotImplementedException();
+            var collection = GetCollection<TEntity>();
+            collection.Save(entity);
         }
 
         public void SaveBatch<TEntity>(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            var collection = GetCollection<TEntity>();
+            collection.InsertBatch(entities);
         }
 
         public void Delete<TEntity>(TEntity entity)
@@ -64,17 +68,35 @@ namespace MongoBasic.Core
 
         public void DeleteAllCollections()
         {
-            throw new NotImplementedException();
+            foreach (var collectionName in Database.GetCollectionNames())
+            {
+                if (collectionName.Contains("system."))
+                {
+                    //we are not allowed to remove or clear system collections
+                    continue;
+                }
+                Database.DropCollection(collectionName);
+            }
         }
 
         public int Count<TEntity>()
         {
-            throw new NotImplementedException();
+            return Query<TEntity>().Count();
         }
 
         public DatabaseStatsResult Status()
         {
             return Database.GetStats();
+        }
+
+        public void AddCollection(Type typeOfObject, String collectionName)
+        {
+            _registeredCollections.Add(new KeyValuePair<Type, string>(typeOfObject, collectionName));
+        }
+
+        public void AddClassMap(IMongoClassMap classMap)
+        {
+            _registeredClassMaps.Add(classMap);
         }
 
         protected abstract void DefineClassMaps();
@@ -89,7 +111,7 @@ namespace MongoBasic.Core
         {
             try
             {
-                var collectionName = RegisteredCollections[typeof(TEntity)];
+                var collectionName = _registeredCollections[typeof(TEntity)];
                 return Database.GetCollection<TEntity>(collectionName);
             }
             catch (Exception ex)

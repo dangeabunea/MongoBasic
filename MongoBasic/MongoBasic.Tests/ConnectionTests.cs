@@ -1,4 +1,5 @@
 ﻿using MongoBasic.Core;
+using MongoBasic.Tests.TestHelper;
 using MongoDB.Driver;
 using Xunit;
 

@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,7 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractMongoSession.cs" />
+    <Compile Include="IdGeneration\AutoIncrementIdGenerator.cs" />
+    <Compile Include="IdGeneration\CollectionAutoIncrementIdIntegrator.cs" />
+    <Compile Include="IMongoClassMap.cs" />
+    <Compile Include="IMongoSession.cs" />
+    <Compile Include="IMongoSessionFactory.cs" />
+    <Compile Include="MongoBasicException.cs" />
+    <Compile Include="MongoClassMap.cs" />
+    <Compile Include="MongoCredentialType.cs" />
+    <Compile Include="MongoSessionFactory.cs" />
+    <Compile Include="MongoSessionFactoryConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using MongoBasic.Core.Abstract;
+using MongoDB.Bson.Serialization;
 
 namespace MongoBasic.Core
 {

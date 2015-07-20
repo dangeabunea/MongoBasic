@@ -5,20 +5,21 @@ using MongoDB.Driver;
 
 namespace MongoBasic.Core.IdGeneration
 {
-    public class CollectionAutoIncrementIdGenerator<T> : IIdGenerator
+    public class AutoIncrementIdGenerator<T> : IIdGenerator
     {
+        private const int CAPACITY = 20;
         private readonly int _capacity;
         private readonly object _generatorLock = new object();
         private IDictionary<string, AutoIncrementIdImplementation> _keyGeneratorsByTag = new Dictionary<string, AutoIncrementIdImplementation>();
         private readonly MongoDatabase _mongoDatabase;
         private readonly string _collectionName;
 
-        public CollectionAutoIncrementIdGenerator(MongoDatabase db, string collectionName)
-            : this(20, db, collectionName)
+        public AutoIncrementIdGenerator(MongoDatabase db, string collectionName)
+            : this(CAPACITY, db, collectionName)
         {
         }
 
-        public CollectionAutoIncrementIdGenerator(int capacity, MongoDatabase mongoDatabase, string collectionName)
+        public AutoIncrementIdGenerator(int capacity, MongoDatabase mongoDatabase, string collectionName)
         {
             this._capacity = capacity;
             this._mongoDatabase = mongoDatabase;

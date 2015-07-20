@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoBasic.Core;
+using MongoBasic.Core.Abstract;
 using MongoBasic.Tests.TestHelper;
 using Xunit;
 
 namespace MongoBasic.Tests
 {
-    public class SessionTests : IDisposable
+    public class MongoSessionTests : IDisposable
     {
         private IMongoSession _session;
 
-        public SessionTests()
+        public MongoSessionTests()
         {
             _session = SessionFactoryBuilder.MongoSessionFactory.OpenSession();
             _session.DeleteAllCollections();

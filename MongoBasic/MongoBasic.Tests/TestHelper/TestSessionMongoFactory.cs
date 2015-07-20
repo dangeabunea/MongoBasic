@@ -13,7 +13,7 @@ namespace MongoBasic.Tests.TestHelper
         protected override void AfterSessionFactoryInitialized(MongoDatabase mongoDatabase)
         {
             AddClassMap(new PersonMap());
-            AddClassMap(new VehicleMap(new CollectionAutoIncrementIdGenerator<long>(mongoDatabase, "Vehicles")));
+            AddClassMap(new VehicleMap(new AutoIncrementIdGenerator<long>(mongoDatabase, "Vehicles")));
         }
     }
 }

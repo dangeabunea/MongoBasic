@@ -1,11 +1,12 @@
 ﻿using MongoBasic.Core;
+using MongoBasic.Core.Abstract;
 using MongoBasic.Tests.TestHelper;
 using MongoDB.Driver;
 using Xunit;
 
 namespace MongoBasic.Tests
 {
-    public class ConnectionTests
+    public class MongoConnectionTests
     {
         [Fact]
         public void Should_establish_connection_to_database()

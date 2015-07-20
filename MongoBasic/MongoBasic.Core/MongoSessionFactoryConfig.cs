@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace MongoBasic.Core
 {
+    /// <summary>
+    /// Mongo session factory configuration object.
+    /// </summary>
     public sealed class MongoSessionFactoryConfig
     {
         public string Server { get; set; }

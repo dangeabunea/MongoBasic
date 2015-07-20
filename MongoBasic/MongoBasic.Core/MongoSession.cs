@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoBasic.Core.Abstract;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
 namespace MongoBasic.Core
 {
-    /// <summary>
-    /// The abstract mongo session is the base class that needs to be ovveriden by concrete, specific
-    /// implementaitons.
-    /// </summary>
     public sealed class MongoSession : IMongoSession
     {
         private readonly MongoDatabase _database;
@@ -23,23 +20,42 @@ namespace MongoBasic.Core
             _registeredCollections = collections;
         }
 
-
+        /// <summary>
+        /// Returns an IQueryable instance of a collection on which you can build lambda expressions for filtering, ordering,
+        /// grouping, etc. All fields will be returned by the query.
+        /// </summary>
         public IQueryable<TEntity> Query<TEntity>()
         {
             var collection = GetCollection<TEntity>();
             return collection.AsQueryable();
         }
 
+        /// <summary>
+        /// Returns an IQueryable instance of a collection on which you can build lambda expressions for filtering, ordering,
+        /// grouping, etc. Only the fields in the parameter will be returned. On deserialization, if a field is not returned, 
+        /// it will be deserialized with its default value.
+        /// </summary>
         public IQueryable<TEntity> Query<TEntity>(string[] fields)
         {
-            throw new NotImplementedException();
+            var collection = GetCollection<TEntity>().FindAllAs<TEntity>();
+            collection.SetFields(fields);
+
+            return collection.AsQueryable();
         }
 
+        /// <summary>
+        /// Returns an IQueryable instance of a sub-type collection on which you can build lambda expressions for filtering, ordering,
+        /// grouping, etc. Only the subtype that is provided will be returned by the query. 
+        /// </summary>
         public IQueryable<TEntitySubType> QuerySubType<TEntity, TEntitySubType>()
         {
-            throw new NotImplementedException();
+            var collection = GetCollection<TEntity>();
+            return collection.AsQueryable().OfType<TEntitySubType>();
         }
 
+        /// <summary>
+        /// Retireve an entity by id. Will return null if the query returns no results.
+        /// </summary>
         public TEntity Get<TEntity>(object id)
         {
             var collection = GetCollection<TEntity>();
@@ -71,18 +87,29 @@ namespace MongoBasic.Core
             return result.SingleOrDefault();
         }
 
+        /// <summary>
+        /// Saves a document into it's corresponding collection. The entity needs to have an Id field. Based on the value of
+        /// this field, the entity will be either inserted, or updated in the database.
+        /// </summary>
         public void Save<TEntity>(TEntity entity)
         {
             var collection = GetCollection<TEntity>();
             collection.Save(entity);
         }
 
+        /// <summary>
+        /// Inserts multiple documents into a collection in one step.
+        /// </summary>
         public void SaveBatch<TEntity>(IEnumerable<TEntity> entities)
         {
             var collection = GetCollection<TEntity>();
             collection.InsertBatch(entities);
         }
 
+        /// <summary>
+        /// Removes the document from a collection. The entity needs to have an Id field. This field is used to
+        /// remove the document.
+        /// </summary>
         public void Delete<TEntity>(TEntity entity)
         {
             var collection = GetCollection<TEntity>();
@@ -108,18 +135,25 @@ namespace MongoBasic.Core
             }
             else
             {
-                throw new Exception("Id is not of known types;");
+                throw new MongoBasicException.InvalidEntityException("Id is not of known types;");
             }
 
             collection.Remove(deleteQuery);
         }
 
+        /// <summary>
+        /// Removes all documents from a collection.
+        /// </summary>
         public void DeleteAll<TEntity>()
         {
             var collection = GetCollection<TEntity>();
             collection.RemoveAll();
         }
-
+        
+        /// <summary>
+        /// Drops all user defined collections from the database. Indexes and users are system collections and will not
+        /// be affected.
+        /// </summary>
         public void DeleteAllCollections()
         {
             foreach (var collectionName in _database.GetCollectionNames())
@@ -133,23 +167,29 @@ namespace MongoBasic.Core
             }
         }
 
+        /// <summary>
+        /// Returns the total number of documents in a collection.
+        /// </summary>
         public int Count<TEntity>()
         {
             return Query<TEntity>().Count();
         }
 
+        /// <summary>
+        /// Returns the database connection status associated for this session.
+        /// </summary>
+        /// <returns></returns>
         public DatabaseStatsResult Status()
         {
             return _database.GetStats();
         }
 
-        public GetIndexesResult GetIndexes<TEntity>()
-        {
-            var collection = GetCollection<TEntity>();
-            return collection.GetIndexes();
-        }
-
-        private MongoCollection<TEntity> GetCollection<TEntity>()
+        /// <summary>
+        /// Returns a MongoDB collection object where you will have access to the native MongoDB
+        /// driver functions. Suitable for advanced usage scenarios where the session facade is not
+        /// enough.
+        /// </summary>
+        public MongoCollection<TEntity> GetCollection<TEntity>()
         {
             try
             {

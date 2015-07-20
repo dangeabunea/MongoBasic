@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoBasic.Core.Abstract;
 using MongoDB.Driver;
 
 namespace MongoBasic.Core
@@ -64,7 +65,7 @@ namespace MongoBasic.Core
         {
             if (classMap == null)
             {
-                throw new Exception("The class map can not be null");
+                throw new ArgumentNullException("classMap");
             }
             _classMaps.Add(classMap);
         }
@@ -76,13 +77,16 @@ namespace MongoBasic.Core
         /// <returns></returns>
         protected MongoCollection GetCollection<T>()
         {
-            string collectionName = _configuration.Collections[typeof (T)];
-            if (collectionName == null)
+            try
             {
-                throw new Exception("Collection " + typeof (T).Name + " does not exist.");
+                string collectionName = _configuration.Collections[typeof (T)];
+                var collection = _mongoDatabase.GetCollection<T>(collectionName);
+                return collection;
             }
-            var collection = _mongoDatabase.GetCollection<T>(collectionName);
-            return collection;
+            catch (Exception ex)
+            {
+                throw new MongoBasicException.CollectionNotFoundException(typeof(T).Name, ex);
+            }
         }
 
         /// <summary>

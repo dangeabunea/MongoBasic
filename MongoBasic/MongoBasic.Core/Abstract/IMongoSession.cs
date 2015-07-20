@@ -2,7 +2,7 @@
 using System.Linq;
 using MongoDB.Driver;
 
-namespace MongoBasic.Core
+namespace MongoBasic.Core.Abstract
 {
     public interface IMongoSession
     {
@@ -17,6 +17,6 @@ namespace MongoBasic.Core
         void DeleteAllCollections();
         int Count<TEntity>();
         DatabaseStatsResult Status();
-        GetIndexesResult GetIndexes<TEntity>();
+        MongoCollection<TEntity> GetCollection<TEntity>();
     }
 }

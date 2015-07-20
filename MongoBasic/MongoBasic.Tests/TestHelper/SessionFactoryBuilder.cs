@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoBasic.Core;
+using MongoBasic.Core.Abstract;
 
 namespace MongoBasic.Tests.TestHelper
 {

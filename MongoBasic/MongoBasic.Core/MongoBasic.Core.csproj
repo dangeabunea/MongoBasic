@@ -46,12 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IMongoClassMap.cs" />
+    <Compile Include="Abstract\IMongoSession.cs" />
+    <Compile Include="Abstract\IMongoSessionFactory.cs" />
     <Compile Include="MongoSession.cs" />
     <Compile Include="IdGeneration\AutoIncrementIdImplementation.cs" />
-    <Compile Include="IdGeneration\CollectionAutoIncrementIdIntegrator.cs" />
-    <Compile Include="IMongoClassMap.cs" />
-    <Compile Include="IMongoSession.cs" />
-    <Compile Include="IMongoSessionFactory.cs" />
+    <Compile Include="IdGeneration\AutoIncrementIdGenerator.cs" />
     <Compile Include="MongoBasicException.cs" />
     <Compile Include="MongoClassMap.cs" />
     <Compile Include="MongoCredentialType.cs" />

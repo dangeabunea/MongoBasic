@@ -17,5 +17,6 @@ namespace MongoBasic.Core
         void DeleteAllCollections();
         int Count<TEntity>();
         DatabaseStatsResult Status();
+        GetIndexesResult GetIndexes<TEntity>();
     }
 }

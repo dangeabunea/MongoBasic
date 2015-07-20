@@ -143,6 +143,11 @@ namespace MongoBasic.Core
             return _database.GetStats();
         }
 
+        public GetIndexesResult GetIndexes<TEntity>()
+        {
+            var collection = GetCollection<TEntity>();
+            return collection.GetIndexes();
+        }
 
         private MongoCollection<TEntity> GetCollection<TEntity>()
         {

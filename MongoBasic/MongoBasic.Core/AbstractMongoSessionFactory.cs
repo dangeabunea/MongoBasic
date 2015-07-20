@@ -4,11 +4,16 @@ using MongoDB.Driver;
 
 namespace MongoBasic.Core
 {
+    /// <summary>
+    /// Abstarct instance of a mongo session factory that provides most common behaviour. It needs to be inherited by a 
+    /// concrete class where the 'AfterSessionFactoryInitialized' needs to be implemented.
+    /// </summary>
     public abstract class AbstractMongoSessionFactory:IMongoSessionFactory
     {
         private readonly MongoSessionFactoryConfig _configuration;
         private readonly MongoClientSettings _mongoClientSettings;
-        private IList<IMongoClassMap> _classMaps; 
+        private readonly IList<IMongoClassMap> _classMaps;
+        private readonly MongoDatabase _mongoDatabase;
 
         protected AbstractMongoSessionFactory(MongoSessionFactoryConfig configuration)
         {
@@ -26,17 +31,13 @@ namespace MongoBasic.Core
             }
             _classMaps = new List<IMongoClassMap>();
             _mongoClientSettings = new MongoClientSettings { Server = new MongoServerAddress(configuration.Server, configuration.Port) };
-            ConfigureAuth(configuration);
             _configuration = configuration;
-
+            ConfigureAuth(configuration);
             var mongoClient = new MongoClient(_mongoClientSettings);
-            var mongoDatabase = mongoClient.GetServer().GetDatabase(_configuration.Database);
-            DefineClassMaps(mongoDatabase);
-            DefineIndexes(mongoDatabase);
-        }
+            _mongoDatabase = mongoClient.GetServer().GetDatabase(_configuration.Database);
 
-        protected abstract void DefineClassMaps(MongoDatabase mongoDatabase);
-        protected abstract void DefineIndexes(MongoDatabase mongoDatabase);
+            AfterSessionFactoryInitialized(_mongoDatabase);
+        }
 
         /// <summary>
         /// Opens a new Mongo Session instance against a Mongo dataabse defined in the session
@@ -50,11 +51,15 @@ namespace MongoBasic.Core
             }
 
             var mongoClient = new MongoClient(_mongoClientSettings);
+
             MongoDatabase database = mongoClient.GetServer().GetDatabase(_configuration.Database);
             IMongoSession session = (IMongoSession)Activator.CreateInstance(typeof(MongoSession), database, _configuration.Collections);
             return session;
         }
 
+        /// <summary>
+        /// Add a class mapping that will be used throughout the lifecycle of the applicaiton
+        /// </summary>
         protected void AddClassMap(IMongoClassMap classMap)
         {
             if (classMap == null)
@@ -63,6 +68,29 @@ namespace MongoBasic.Core
             }
             _classMaps.Add(classMap);
         }
+
+        /// <summary>
+        /// Get an instance to a mongo collection by the type of the entity
+        /// </summary>
+        /// <typeparam name="T">The type of the entity</typeparam>
+        /// <returns></returns>
+        protected MongoCollection GetCollection<T>()
+        {
+            string collectionName = _configuration.Collections[typeof (T)];
+            if (collectionName == null)
+            {
+                throw new Exception("Collection " + typeof (T).Name + " does not exist.");
+            }
+            var collection = _mongoDatabase.GetCollection<T>(collectionName);
+            return collection;
+        }
+
+        /// <summary>
+        /// Exptensibility point that is executed after the session factory has been initialized and a conneciton
+        /// to the database has been done. It can be used to add class mappings, indexes or other custom logic
+        /// </summary>
+        /// <param name="mongoDatabase">An instance to the mongo databse</param>
+        protected abstract void AfterSessionFactoryInitialized(MongoDatabase mongoDatabase);
 
         private void ConfigureAuth(MongoSessionFactoryConfig configuration)
         {

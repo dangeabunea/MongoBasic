@@ -10,15 +10,10 @@ namespace MongoBasic.Tests.TestHelper
         {
         }
 
-        protected override void DefineClassMaps(MongoDatabase mongoDatabase)
+        protected override void AfterSessionFactoryInitialized(MongoDatabase mongoDatabase)
         {
             AddClassMap(new PersonMap());
             AddClassMap(new VehicleMap(new CollectionAutoIncrementIdGenerator<long>(mongoDatabase, "Vehicles")));
-        }
-
-        protected override void DefineIndexes(MongoDatabase mongoDatabase)
-        {
-            
         }
     }
 }

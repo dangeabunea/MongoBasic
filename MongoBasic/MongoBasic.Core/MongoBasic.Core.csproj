@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MongoSession.cs" />
-    <Compile Include="IdGeneration\AutoIncrementIdGenerator.cs" />
+    <Compile Include="IdGeneration\AutoIncrementIdImplementation.cs" />
     <Compile Include="IdGeneration\CollectionAutoIncrementIdIntegrator.cs" />
     <Compile Include="IMongoClassMap.cs" />
     <Compile Include="IMongoSession.cs" />

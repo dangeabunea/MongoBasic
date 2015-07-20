@@ -6,7 +6,7 @@ using MongoDB.Driver.Builders;
 
 namespace MongoBasic.Core.IdGeneration
 {
-    public class AutoIncrementIdGenerator : IDisposable
+    public class AutoIncrementIdImplementation : IDisposable
     {
         private readonly long _capacity;
         private readonly ReaderWriterLockSlim _lockSlim = new ReaderWriterLockSlim();
@@ -16,7 +16,7 @@ namespace MongoBasic.Core.IdGeneration
 
         public long CurrentHi { get { return _currentHi; } }
 
-        public AutoIncrementIdGenerator(long capacity, MongoDatabase mongo)
+        public AutoIncrementIdImplementation(long capacity, MongoDatabase mongo)
         {
             _currentHi = 0;
             _capacity = capacity;

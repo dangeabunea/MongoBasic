@@ -9,7 +9,7 @@ namespace MongoBasic.Core.IdGeneration
     {
         private readonly int _capacity;
         private readonly object _generatorLock = new object();
-        private IDictionary<string, AutoIncrementIdGenerator> _keyGeneratorsByTag = new Dictionary<string, AutoIncrementIdGenerator>();
+        private IDictionary<string, AutoIncrementIdImplementation> _keyGeneratorsByTag = new Dictionary<string, AutoIncrementIdImplementation>();
         private readonly MongoDatabase _mongoDatabase;
         private readonly string _collectionName;
 
@@ -27,7 +27,7 @@ namespace MongoBasic.Core.IdGeneration
 
         public object GenerateId(object container, object document)
         {
-            AutoIncrementIdGenerator value;
+            AutoIncrementIdImplementation value;
             Type parameterType = typeof(T);
 
             lock (_generatorLock)
@@ -39,8 +39,8 @@ namespace MongoBasic.Core.IdGeneration
                     else return null;
                 }
 
-                value = new AutoIncrementIdGenerator(_capacity, _mongoDatabase);
-                _keyGeneratorsByTag = new Dictionary<string, AutoIncrementIdGenerator>(_keyGeneratorsByTag)
+                value = new AutoIncrementIdImplementation(_capacity, _mongoDatabase);
+                _keyGeneratorsByTag = new Dictionary<string, AutoIncrementIdImplementation>(_keyGeneratorsByTag)
                 {
                     {_collectionName, value}
                 };

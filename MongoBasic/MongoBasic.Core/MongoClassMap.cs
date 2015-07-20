@@ -4,11 +4,28 @@ namespace MongoBasic.Core
 {
     public abstract class MongoClassMap<T> : IMongoClassMap
     {
-        protected MongoClassMap()
+        private static readonly object ClassMapLock;
+        protected IIdGenerator IdGenerator;
+
+        static MongoClassMap()
         {
-            if (!BsonClassMap.IsClassMapRegistered(typeof(T)))
+            ClassMapLock = new object();
+        }
+
+        protected MongoClassMap(IIdGenerator idGenerator = null)
+        {
+            if (idGenerator != null)
             {
-                BsonClassMap.RegisterClassMap<T>(MapEntity);
+                IdGenerator = idGenerator;
+            }
+
+            //we need to synchronize access to this resource because we don want multiple mongo class maps to be registerd;
+            lock (ClassMapLock)
+            {
+                if (!BsonClassMap.IsClassMapRegistered(typeof (T)))
+                {
+                    BsonClassMap.RegisterClassMap<T>(MapEntity);
+                }
             }
         }
 

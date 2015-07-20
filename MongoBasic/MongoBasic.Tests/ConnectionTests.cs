@@ -19,10 +19,10 @@ namespace MongoBasic.Tests
                 User = TestConstants.User,
                 Password = TestConstants.Password
             };
-            IMongoSessionFactory mongoSessionFactory = new MongoSessionFactory(mongoSettings);
+            IMongoSessionFactory mongoSessionFactory = new TestSessionMongoFactory(mongoSettings);
 
             //act
-            IMongoSession mongoSession = mongoSessionFactory.OpenSession<SimpleMongoSession>();
+            IMongoSession mongoSession = mongoSessionFactory.OpenSession();
 
             //assert
             Assert.True(mongoSession.Status().ErrorMessage == null, "Mongo session should have been open.");
@@ -41,10 +41,10 @@ namespace MongoBasic.Tests
                 User = TestConstants.User,
                 Password = TestConstants.Password
             };
-            IMongoSessionFactory mongoSessionFactory = new MongoSessionFactory(mongoSettings);
+            IMongoSessionFactory mongoSessionFactory = new TestSessionMongoFactory(mongoSettings);
 
             //act
-            IMongoSession mongoSession = mongoSessionFactory.OpenSession<SimpleMongoSession>();
+            IMongoSession mongoSession = mongoSessionFactory.OpenSession();
 
             //assert
             Assert.Throws<MongoConnectionException>(() => { var status = mongoSession.Status(); });
@@ -63,10 +63,10 @@ namespace MongoBasic.Tests
                 User = TestConstants.User,
                 Password = invalidPass
             };
-            IMongoSessionFactory mongoSessionFactory = new MongoSessionFactory(mongoSettings);
+            IMongoSessionFactory mongoSessionFactory = new TestSessionMongoFactory(mongoSettings);
 
             //act
-            IMongoSession mongoSession = mongoSessionFactory.OpenSession<SimpleMongoSession>();
+            IMongoSession mongoSession = mongoSessionFactory.OpenSession();
 
             //assert
             Assert.Throws<MongoConnectionException>(() => { var status = mongoSession.Status(); });

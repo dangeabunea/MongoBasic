@@ -4,12 +4,13 @@ using MongoDB.Driver;
 
 namespace MongoBasic.Core
 {
-    public sealed class MongoSessionFactory:IMongoSessionFactory
+    public abstract class AbstractMongoSessionFactory:IMongoSessionFactory
     {
         private readonly MongoSessionFactoryConfig _configuration;
         private readonly MongoClientSettings _mongoClientSettings;
+        private IList<IMongoClassMap> _classMaps; 
 
-        public MongoSessionFactory(MongoSessionFactoryConfig configuration)
+        protected AbstractMongoSessionFactory(MongoSessionFactoryConfig configuration)
         {
             if (configuration == null)
             {
@@ -23,18 +24,25 @@ namespace MongoBasic.Core
             {
                 throw new MongoBasicException.ConfigurationException("Can not build session factory. The argument 'configuration.database' is null or empty.");
             }
-
+            _classMaps = new List<IMongoClassMap>();
             _mongoClientSettings = new MongoClientSettings { Server = new MongoServerAddress(configuration.Server, configuration.Port) };
             ConfigureAuth(configuration);
             _configuration = configuration;
+
+            var mongoClient = new MongoClient(_mongoClientSettings);
+            var mongoDatabase = mongoClient.GetServer().GetDatabase(_configuration.Database);
+            DefineClassMaps(mongoDatabase);
+            DefineIndexes(mongoDatabase);
         }
+
+        protected abstract void DefineClassMaps(MongoDatabase mongoDatabase);
+        protected abstract void DefineIndexes(MongoDatabase mongoDatabase);
 
         /// <summary>
         /// Opens a new Mongo Session instance against a Mongo dataabse defined in the session
         /// factory settings.
         /// </summary>
-        /// <typeparam name="T">The concrete type of the Mongo Session</typeparam>
-        public IMongoSession OpenSession<T>() where T : AbstractMongoSession
+        public IMongoSession OpenSession()
         {
             if (_mongoClientSettings == null)
             {
@@ -43,8 +51,17 @@ namespace MongoBasic.Core
 
             var mongoClient = new MongoClient(_mongoClientSettings);
             MongoDatabase database = mongoClient.GetServer().GetDatabase(_configuration.Database);
-            IMongoSession session = (IMongoSession)Activator.CreateInstance(typeof(T), database);
+            IMongoSession session = (IMongoSession)Activator.CreateInstance(typeof(MongoSession), database, _configuration.Collections);
             return session;
+        }
+
+        protected void AddClassMap(IMongoClassMap classMap)
+        {
+            if (classMap == null)
+            {
+                throw new Exception("The class map can not be null");
+            }
+            _classMaps.Add(classMap);
         }
 
         private void ConfigureAuth(MongoSessionFactoryConfig configuration)

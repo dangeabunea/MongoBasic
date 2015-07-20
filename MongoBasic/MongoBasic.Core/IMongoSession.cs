@@ -9,6 +9,7 @@ namespace MongoBasic.Core
         IQueryable<TEntity> Query<TEntity>();
         IQueryable<TEntity> Query<TEntity>(string[] fields);
         IQueryable<TEntitySubType> QuerySubType<TEntity, TEntitySubType>();
+        TEntity Get<TEntity>(object id);
         void Save<TEntity>(TEntity entity);
         void SaveBatch<TEntity>(IEnumerable<TEntity> entities);
         void Delete<TEntity>(TEntity entity);

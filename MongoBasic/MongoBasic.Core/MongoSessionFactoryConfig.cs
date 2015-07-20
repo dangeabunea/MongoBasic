@@ -1,4 +1,8 @@
-﻿namespace MongoBasic.Core
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+
+namespace MongoBasic.Core
 {
     public sealed class MongoSessionFactoryConfig
     {
@@ -8,12 +12,14 @@
         public string User { get; set; }
         public string Password { get; set; }
         public MongoCredentialType CredentialType { get; set; }
+        public IDictionary<Type, string> Collections { get; set; }
 
         public MongoSessionFactoryConfig()
         {
             Server = "localhost";
             Port = 25017;
             CredentialType = MongoCredentialType.MONGODB_CR;
+            Collections = new Dictionary<Type, string>();
         }
     }
 }

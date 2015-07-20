@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using MongoBasic.Core;
 using MongoBasic.Core.Abstract;
 
@@ -13,11 +14,11 @@ namespace MongoBasic.Tests.TestHelper
         {
             var mongoSettings = new MongoSessionFactoryConfig
             {
-                Server = TestConstants.Server,
-                Port = TestConstants.Port,
-                Database = TestConstants.Database,
-                User = TestConstants.User,
-                Password = TestConstants.Password,
+                Server = ConfigurationManager.AppSettings["server"],
+                Port = Convert.ToInt32(ConfigurationManager.AppSettings["port"]),
+                Database = ConfigurationManager.AppSettings["database"],
+                User = ConfigurationManager.AppSettings["user"],
+                Password = ConfigurationManager.AppSettings["password"],
                 Collections = new Dictionary<Type, string>
                 {
                     {typeof(Person), "Persons"},

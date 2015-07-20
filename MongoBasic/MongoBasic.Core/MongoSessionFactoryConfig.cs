@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Driver;
 
 namespace MongoBasic.Core
 {
@@ -13,6 +14,7 @@ namespace MongoBasic.Core
         public string Database { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
+        public string ConnectionString { get; set; }
         public MongoCredentialType CredentialType { get; set; }
         public IDictionary<Type, string> Collections { get; set; }
 
@@ -22,6 +24,25 @@ namespace MongoBasic.Core
             Port = 25017;
             CredentialType = MongoCredentialType.MONGODB_CR;
             Collections = new Dictionary<Type, string>();
+            ConnectionString = null;
+        }
+
+        public MongoSessionFactoryConfig(string mongoConnectionString)
+        {
+            Collections = new Dictionary<Type, string>();
+            CredentialType = MongoCredentialType.MONGODB_CR;
+            ConnectionString = mongoConnectionString;
+            MongoUrl mongoUrl = new MongoUrl(mongoConnectionString);
+            Server = mongoUrl.Server.Host;
+            Port = mongoUrl.Server.Port;
+            Database = mongoUrl.DatabaseName;
+            User = mongoUrl.Username;
+            Password = mongoUrl.Password;
+        }
+
+        public bool PerformAuth()
+        {
+            return !string.IsNullOrEmpty(User);
         }
     }
 }

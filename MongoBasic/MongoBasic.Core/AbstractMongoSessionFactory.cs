@@ -98,7 +98,7 @@ namespace MongoBasic.Core
 
         private void ConfigureAuth(MongoSessionFactoryConfig configuration)
         {
-            if (!string.IsNullOrEmpty(configuration.User))
+            if (configuration.PerformAuth())
             {
                 switch (configuration.CredentialType)
                 {

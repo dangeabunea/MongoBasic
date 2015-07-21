@@ -33,9 +33,6 @@ namespace MongoBasic.Core
         /// <summary>
         /// Can be ovveridden by concrete map implementations
         /// </summary>
-        protected virtual void MapEntity(BsonClassMap<T> cm)
-        {
-            cm.AutoMap();
-        }
+        protected abstract void MapEntity(BsonClassMap<T> cm);
     }
 }

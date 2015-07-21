@@ -75,7 +75,7 @@ namespace MongoBasic.Core
         /// </summary>
         /// <typeparam name="T">The type of the entity</typeparam>
         /// <returns></returns>
-        protected MongoCollection GetCollection<T>()
+        protected MongoCollection<T> GetCollection<T>()
         {
             try
             {

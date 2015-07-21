@@ -14,12 +14,12 @@ namespace MongoBasic.Tests
         public MongoSessionTests()
         {
             _session = SessionFactoryBuilder.MongoSessionFactory.OpenSession();
-            _session.DeleteAllCollections();
+            _session.DropAllCollections();
         }
 
         public void Dispose()
         {
-            _session.DeleteAllCollections();
+            _session.DropAllCollections();
             _session = null;
         }
 

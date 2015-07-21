@@ -14,7 +14,7 @@ namespace MongoBasic.Core.Abstract
         void SaveBatch<TEntity>(IEnumerable<TEntity> entities);
         void Delete<TEntity>(TEntity entity);
         void DeleteAll<TEntity>();
-        void DeleteAllCollections();
+        void DropAllCollections();
         int Count<TEntity>();
         DatabaseStatsResult Status();
         MongoCollection<TEntity> GetCollection<TEntity>();

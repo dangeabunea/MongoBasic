@@ -6,7 +6,7 @@ namespace MongoBasic.Core
     public abstract class MongoClassMap<T> : IMongoClassMap
     {
         private static readonly object ClassMapLock;
-        protected IIdGenerator IdGenerator;
+        protected readonly IIdGenerator IdGenerator;
 
         static MongoClassMap()
         {
@@ -17,7 +17,7 @@ namespace MongoBasic.Core
         {
             if (idGenerator != null)
             {
-                IdGenerator = idGenerator;
+                this.IdGenerator = idGenerator;
             }
 
             //we need to synchronize access to this resource because we don want multiple mongo class maps to be registerd;

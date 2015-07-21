@@ -154,7 +154,7 @@ namespace MongoBasic.Core
         /// Drops all user defined collections from the database. Indexes and users are system collections and will not
         /// be affected.
         /// </summary>
-        public void DeleteAllCollections()
+        public void DropAllCollections()
         {
             foreach (var collectionName in _database.GetCollectionNames())
             {

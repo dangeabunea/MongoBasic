@@ -61,7 +61,7 @@ namespace MongoBasic.Core
         /// <summary>
         /// Add a class mapping that will be used throughout the lifecycle of the applicaiton
         /// </summary>
-        protected void AddClassMap(IMongoClassMap classMap)
+        protected void RegisterClassMap(IMongoClassMap classMap)
         {
             if (classMap == null)
             {
